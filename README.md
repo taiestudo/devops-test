@@ -2,6 +2,15 @@
 
 This repository contains a hands-on DevOps assessment covering Docker, Kubernetes, Git, AWS, Helm, and Terraform.
 
+---
+
+## Deliverables
+- All code, configs, and files pushed to a public GitHub repo in your Github personal account
+- Upload a shell.txt with all correct commands needed to perform below actions, also copy and paste CLI outputs (Split and organize per parts like the test) 
+- Answers to AWS conceptual questions to answers.txt
+
+---
+
 ## Requirements
 - Docker Desktop with Kubernetes enabled
 - AWS CLI configured
@@ -16,7 +25,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 **Objective**: Demonstrate proficiency with Git
 
-- Fork and clone a Node.js app repository
+- Fork and clone Node.js [Bulletin Board App](https://github.com/docker/getting-started/tree/master/app) app repository
 - Create a feature branch
 - Modify the app to support configurable port via env variable
 - Commit and push changes
@@ -27,7 +36,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 2: Docker
 
-**Objective**: Build and run Docker containers
+**Objective**: Build and run Docker containers with Bulletin
 
 - Optimize Dockerfile using a minimal base image
 - Add .dockerignore
@@ -39,7 +48,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 3: Kubernetes Deployment
 
-**Objective**: Deploy to local Kubernetes cluster
+**Objective**: Deploy to local Kubernetes cluster with Bulletin
 
 - Create Deployment, Service, and Ingress manifests
 - Use env variable for port in Deployment
@@ -50,7 +59,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 4: Helm Chart
 
-**Objective**: Package app using Helm
+**Objective**: Package app using Helm with Bulletin
 
 - Scaffold Helm chart
 - Template Deployment, Service, Ingress
@@ -71,6 +80,8 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
   - What is IAM Role?
   - Security Group vs NACL?
   - S3 lifecycle rule use cases?
+  - What services manages DNS in AWS?
+  - What is the difference between SSM and SSH?
 
 ---
 
@@ -81,14 +92,14 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Create VPC (10.0.0.0/16)
 - Create 2 public subnets in different AZs
 - Tag all resources (e.g., environment = dev)
-- Launch t2.micro EC2 instance with SSH access open
+- Launch t2.micro EC2 instance with SSH access open to the Internet
 - Output VPC ID, subnet IDs, and instance public IP
 
 ---
 
 ## Part 7: CI/CD Pipeline Design
 
-**Objective**: Describe or implement a CI/CD pipeline
+**Objective**: Describe or implement a CI/CD pipeline with Bulletin
 
 - Build Docker image on push
 - Push to container registry
@@ -96,14 +107,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ---
 
-## Deliverables
-- All code, configs, and files pushed to a GitHub repo
-- Screenshots, and file.txt with all commands need to perform above actions, logs of CLI outpu (Split and organize per parts liek the test)
-- Answers to AWS conceptual questions
-
----
-
-## Optional Resources
+## Resources
 - [Bulletin Board App](https://github.com/docker/getting-started/tree/master/app)
 - [AWS CLI Docs](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html)
 - [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
