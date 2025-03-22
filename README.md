@@ -102,11 +102,10 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 7: CI/CD Pipeline Design
 
-**Objective**: Describe or implement a CI/CD pipeline for Bulletin
+**Objective**: Create and implement a CI/CD pipeline for Bulletin in GitHub Actions
 
 - Build Docker image on push
 - Push to container registry
-- Deploy to local Kubernetes using Helm with version update
 
 ---
 
