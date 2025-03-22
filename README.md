@@ -5,7 +5,8 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 ---
 
 ## Deliverables
-- All code, configs, and files pushed to a public GitHub repo in your Github personal account
+- Create a branch with your GitHub username to commit all your code and deliverables 
+- All code, configs, and files pushed to your branch
 - Upload a shell.txt with all correct commands needed to perform below actions, also copy and paste CLI outputs (Split and organize per parts like the test) 
 - Answers to AWS conceptual questions to answers.txt
 
@@ -36,7 +37,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 2: Docker
 
-**Objective**: Build and run Docker containers with Bulletin
+**Objective**: Build and run Docker containers for Bulletin
 
 - Optimize Dockerfile using a minimal base image
 - Add .dockerignore
@@ -48,7 +49,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 3: Kubernetes Deployment
 
-**Objective**: Deploy to local Kubernetes cluster with Bulletin
+**Objective**: Deploy Bulletin to local Kubernetes cluster
 
 - Create Deployment, Service, and Ingress manifests
 - Use env variable for port in Deployment
@@ -59,7 +60,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 4: Helm Chart
 
-**Objective**: Package app using Helm with Bulletin
+**Objective**: Package Bulletin app using Helm
 
 - Scaffold Helm chart
 - Template Deployment, Service, Ingress
@@ -100,7 +101,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 ## Part 7: CI/CD Pipeline Design
 
-**Objective**: Describe or implement a CI/CD pipeline with Bulletin
+**Objective**: Describe or implement a CI/CD pipeline for Bulletin
 
 - Build Docker image on push
 - Push to container registry
