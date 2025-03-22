@@ -9,7 +9,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Push all code, configs, and files to your repo
 - Upload a shell.txt with all correct commands needed to perform below actions, also copy and paste CLI outputs (Split and organize per parts like the test) 
 - Answers to AWS conceptual questions to answers.txt
-- make it public and inform your repo and branch at the end of the test
+- Make it public and inform your repo and branch at the end of the test
 
 ---
 
