@@ -1,6 +1,6 @@
 # DevOps Practice Test
 
-This repository contains a hands-on DevOps assessment covering Docker, Kubernetes, Git, AWS, Helm, and Terraform.
+This repository contains a hands-on DevOps assessment covering Docker, Kubernetes, Git, AWS, Helm, and Terraform. You can utilize any AI, Google Search, or other tools, but do it yourself.
 
 ---
 
