@@ -28,7 +28,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 **Objective**: Demonstrate proficiency with Git
 
 - Fork and clone Node.js [Bulletin Board App](https://github.com/docker/getting-started/tree/master/app) app repository
-- Create a feature branch
+- Create a feature branch called develop
 - Modify the app to support configurable port via env variable
 - Commit and push changes
 - Simulate a merge conflict and resolve it
