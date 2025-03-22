@@ -64,7 +64,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Scaffold Helm chart
 - Template Deployment, Service, Ingress
 - Parametrize image, port, replicas, and ingress path
-- Install and upgrade Helm release
+- Install and upgrade Helm release local
 
 ---
 
@@ -94,6 +94,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Tag all resources (e.g., environment = dev)
 - Launch t2.micro EC2 instance with SSH access open to the Internet
 - Output VPC ID, subnet IDs, and instance public IP
+- Destroy all resources
 
 ---
 
@@ -103,7 +104,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 - Build Docker image on push
 - Push to container registry
-- Deploy to Kubernetes using Helm with version update
+- Deploy to local Kubernetes using Helm with version update
 
 ---
 
