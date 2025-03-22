@@ -5,10 +5,11 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 ---
 
 ## Deliverables
-- Create a branch with your GitHub username to commit all your code and deliverables 
-- All code, configs, and files pushed to your branch
+- Fork this repo to youir GitHub personal account to commit all your code and deliverables 
+- Push all code, configs, and files to your repo
 - Upload a shell.txt with all correct commands needed to perform below actions, also copy and paste CLI outputs (Split and organize per parts like the test) 
 - Answers to AWS conceptual questions to answers.txt
+- make it public and inform your repo and branch at the end of the test
 
 ---
 
