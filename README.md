@@ -45,6 +45,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Build and tag the image
 - Run the container using env-based port
 - Inspect container and image
+- Show container logs
 
 ---
 
@@ -56,6 +57,9 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Use env variable for port in Deployment
 - Deploy with kubectl
 - Test app access via Ingress
+- Access the container shell and show container disk free space
+- Show container logs
+- Show deployed deployment yaml
 
 ---
 
@@ -63,10 +67,10 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 
 **Objective**: Package Bulletin app using Helm
 
-- Scaffold Helm chart
+- Create Helm chart
 - Template Deployment, Service, Ingress
 - Parametrize image, port, replicas, and ingress path
-- Install and upgrade Helm release local
+- Install and upgrade Helm release local after change values
 
 ---
 
@@ -94,7 +98,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Create VPC (10.0.0.0/16)
 - Create 2 public subnets in different AZs
 - Tag all resources (e.g., environment = dev)
-- Launch t2.micro EC2 instance with SSH access open to the Internet
+- Launch t2.micro EC2 instance with SSH access open to the Internet and access the ec2 and show disk free space
 - Output VPC ID, subnet IDs, and instance public IP
 - Destroy all resources
 
