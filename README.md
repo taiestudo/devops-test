@@ -19,7 +19,7 @@ This repository contains a hands-on DevOps assessment covering Docker, Kubernete
 - Git CLI
 - Terraform
 - Helm
-- An AWS account (or sandbox)
+- An AWS account to utilize free-tier
 
 ---
 
