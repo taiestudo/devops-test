@@ -100,3 +100,360 @@ Changes not staged for commit:
 no changes added to commit (use "git add" and/or "git commit -a")
 Dropped refs/stash@{0} (37080841127593da5a7c4737cacea50acaf5cda0)
 devops-test $git restore app/src/index.js
+
+############ Part 2: Docker ############ 
+
+ 1. Optimize Dockerfile using a minimal base image
+
+ 2. Add .dockerignore
+
+ 3. Build and tag the image
+
+devops-test $docker build -t bulletin-app:v1.0 .
+[+] Building 2.9s (14/14) FINISHED                                                                                    docker:desktop-linux
+ => [internal] load build definition from Dockerfile                                                                                  0.0s
+ => => transferring dockerfile: 735B                                                                                                  0.0s
+ => [internal] load metadata for docker.io/library/node:20-alpine                                                                     2.1s
+ => [auth] library/node:pull token for registry-1.docker.io                                                                           0.0s
+ => [internal] load .dockerignore                                                                                                     0.0s
+ => => transferring context: 247B                                                                                                     0.0s
+ => [internal] load build context                                                                                                     0.0s
+ => => transferring context: 3.30kB                                                                                                   0.0s
+ => [builder 1/5] FROM docker.io/library/node:20-alpine@sha256:8bda036ddd59ea51a23bc1a1035d3b5c614e72c01366d989f4120e8adca196d4       0.1s
+ => => resolve docker.io/library/node:20-alpine@sha256:8bda036ddd59ea51a23bc1a1035d3b5c614e72c01366d989f4120e8adca196d4               0.1s
+ => CACHED [builder 2/5] WORKDIR /app                                                                                                 0.0s
+ => CACHED [builder 3/5] COPY app/package.json app/yarn.lock ./                                                                       0.0s
+ => CACHED [builder 4/5] RUN yarn install --production --frozen-lockfile                                                              0.0s
+ => CACHED [builder 5/5] COPY app/src ./src                                                                                           0.0s
+ => CACHED [production 3/5] COPY --from=builder /app/node_modules ./node_modules                                                      0.0s
+ => CACHED [production 4/5] COPY --from=builder /app/src ./src                                                                        0.0s
+ => CACHED [production 5/5] COPY app/package.json ./                                                                                  0.0s
+ => exporting to image                                                                                                                0.3s
+ => => exporting layers                                                                                                               0.0s
+ => => exporting manifest sha256:f05248c14a4f36fbe6848d03afe655ef8a5006648ecf925fc1c8774dc6edd2f3                                     0.0s
+ => => exporting config sha256:7b78c3445d4635114392a2b03a68768ff3d0a49444c9b98c4e96afc27a407bef                                       0.0s
+ => => exporting attestation manifest sha256:e3309ee1e5c2435bf3661a88242ec83a3702f0696a2727f95d9e32d7f31bc871                         0.1s
+ => => exporting manifest list sha256:8077bd7c5b682b26a13bbb09312dd59ff19ab399d83e4db6bc92ff549769882f                                0.0s
+ => => naming to docker.io/library/bulletin-app:v1.0                                                                                  0.0s
+ => => unpacking to docker.io/library/bulletin-app:v1.0   
+
+ 4. Run the container using env-based port
+
+devops-test $docker run -dp 8080:8081 --name bulletin-container -e PORT=8081 bulletin-app:v1.0
+0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd
+
+5. Inspect container and image
+
+devops-test $docker inspect bulletin-container
+[
+    {
+        "Id": "0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd",
+        "Created": "2025-03-31T19:01:31.854737561Z",
+        "Path": "docker-entrypoint.sh",
+        "Args": [
+            "node",
+            "src/index.js"
+        ],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 4240,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2025-03-31T19:01:32.048637743Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:8077bd7c5b682b26a13bbb09312dd59ff19ab399d83e4db6bc92ff549769882f",
+        "ResolvConfPath": "/var/lib/docker/containers/0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd/hostname",
+        "HostsPath": "/var/lib/docker/containers/0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd/hosts",
+        "LogPath": "/var/lib/docker/containers/0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd/0ba7c38f77daaf0406a614880191daff97c139bbb6d42dcc254f56fc7edccbbd-json.log",
+        "Name": "/bulletin-container",
+        "RestartCount": 0,
+        "Driver": "overlayfs",
+        "Platform": "linux",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "bridge",
+            "PortBindings": {
+                "8081/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                9,
+                139
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "private",
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "private",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "runc",
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": null,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "MaskedPaths": [
+                "/proc/asound",
+                "/proc/acpi",
+                "/proc/kcore",
+                "/proc/keys",
+                "/proc/latency_stats",
+                "/proc/timer_list",
+                "/proc/timer_stats",
+                "/proc/sched_debug",
+                "/proc/scsi",
+                "/sys/firmware",
+                "/sys/devices/virtual/powercap"
+            ],
+            "ReadonlyPaths": [
+                "/proc/bus",
+                "/proc/fs",
+                "/proc/irq",
+                "/proc/sys",
+                "/proc/sysrq-trigger"
+            ]
+        },
+        "GraphDriver": {
+            "Data": null,
+            "Name": "overlayfs"
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "0ba7c38f77da",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8081/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PORT=8081",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NODE_VERSION=20.19.0",
+                "YARN_VERSION=1.22.22"
+            ],
+            "Cmd": [
+                "node",
+                "src/index.js"
+            ],
+            "Image": "bulletin-app:v1.0",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "112ac88c0979195d958d7aa5fabe51b9baa3bf350c2c70cc7bb84488e639cc7d",
+            "SandboxKey": "/var/run/docker/netns/112ac88c0979",
+            "Ports": {
+                "8081/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "8080"
+                    }
+                ]
+            },
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "69de0fda70d67a2a71812f664fced4869613240e84f3beb5aec4557de4a38758",
+            "Gateway": "172.17.0.1",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "MacAddress": "c6:2f:12:f9:25:65",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "MacAddress": "c6:2f:12:f9:25:65",
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "f4d41363491e2ac96823585f77690027600936264758eaaddd0025b10577a5e2",
+                    "EndpointID": "69de0fda70d67a2a71812f664fced4869613240e84f3beb5aec4557de4a38758",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        },
+        "ImageManifestDescriptor": {
+            "mediaType": "application/vnd.oci.image.manifest.v1+json",
+            "digest": "sha256:f05248c14a4f36fbe6848d03afe655ef8a5006648ecf925fc1c8774dc6edd2f3",
+            "size": 1813,
+            "platform": {
+                "architecture": "amd64",
+                "os": "linux"
+            }
+        }
+    }
+]
+
+devops-test $docker inspect bulletin-app:v1.0
+[
+    {
+        "Id": "sha256:8077bd7c5b682b26a13bbb09312dd59ff19ab399d83e4db6bc92ff549769882f",
+        "RepoTags": [
+            "bulletin-app:v1.0"
+        ],
+        "RepoDigests": [
+            "bulletin-app@sha256:8077bd7c5b682b26a13bbb09312dd59ff19ab399d83e4db6bc92ff549769882f"
+        ],
+        "Parent": "",
+        "Comment": "buildkit.dockerfile.v0",
+        "Created": "2025-03-31T01:46:20.31799508Z",
+        "DockerVersion": "",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "8081/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "NODE_VERSION=20.19.0",
+                "YARN_VERSION=1.22.22"
+            ],
+            "Cmd": [
+                "node",
+                "src/index.js"
+            ],
+            "ArgsEscaped": true,
+            "Image": "",
+            "Volumes": null,
+            "WorkingDir": "/app",
+            "Entrypoint": [
+                "docker-entrypoint.sh"
+            ],
+            "OnBuild": null,
+            "Labels": null
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 56475567,
+        "GraphDriver": {
+            "Data": null,
+            "Name": "overlayfs"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:08000c18d16dadf9553d747a58cf44023423a9ab010aab96cf263d2216b8b350",
+                "sha256:4f35fe5263c773129f4dac6349a5acb24173fa4ba546afd7e6b2654320dc2ccd",
+                "sha256:31d5ff869df5b755ccfecbe1680ce3908d49b5e25f0418db50d37e14975c5174",
+                "sha256:71966995f05c1fbc5fbd7171fb8bb17e0fe37bef6c60c5d60ddfad59c116bfa0",
+                "sha256:c9a90760b796380dcd4d90a1a70a580618c36f8622a2826546a1290585454714",
+                "sha256:4a759282ca352491944014c348c1e930a79f3fd9c4b858ff7e54260fd297d915",
+                "sha256:3ba1c6f50a04d8461410aa93558f395f8d3df163e66e6aef049943e5fb21cda1",
+                "sha256:bb7e69b794bf3defe9901db7240556540c3767dd7fb1e6c030d03c66261be203"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2025-03-31T19:01:07.553187727Z"
+        },
+        "Descriptor": {
+            "mediaType": "application/vnd.oci.image.index.v1+json",
+            "digest": "sha256:8077bd7c5b682b26a13bbb09312dd59ff19ab399d83e4db6bc92ff549769882f",
+            "size": 856
+        }
+    }
+]
+
+6. Show container logs
+
+devops-test $docker logs bulletin-container
+Using sqlite database at /etc/todos/todo.db
+App listening on port 8081
+

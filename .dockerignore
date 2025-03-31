@@ -1,0 +1,22 @@
+# Git
+.git
+**/.git
+
+# Node modules
+node_modules
+npm-debug.log
+yarn-error.log
+
+# OS / IDE specific
+.DS_Store
+*.env
+.vscode/
+
+# Deliverables
+shell.txt
+answers.txt
+
+# Other config files
+.gitignore
+README.md
+
