@@ -14,7 +14,11 @@ app.post('/items', addItem);
 app.put('/items/:id', updateItem);
 app.delete('/items/:id', deleteItem);
 
+<<<<<<< HEAD
 const port = process.env.PORT || 3000;  
+=======
+const port = process.env.PORT || 8888;  
+>>>>>>> main
 db.init().then(() => {
     app.listen(port, () => {
         console.log(`App listening on port ${port}`);
