@@ -1,0 +1,60 @@
+  # Default values for bulletin-chart.
+  replicaCount: 1
+
+  image:
+    repository: bulletin-app
+    pullPolicy: IfNotPresent
+    tag: "v1.0"
+
+  imagePullSecrets: []
+  nameOverride: ""
+  fullnameOverride: ""
+
+  serviceAccount:
+    create: false
+    automount: true
+    annotations: {}
+    name: ""
+
+  podAnnotations: {}
+  podLabels: {}
+
+  podSecurityContext: {}
+
+  securityContext: {}
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8081
+
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations: {}
+    hosts:
+      - host: bulletin-chart.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+  resources: {}
+
+  livenessProbe: {}
+    # httpGet:
+    #   path: /
+    #   port:
+  readinessProbe: {}
+    # httpGet:
+    #   path: /
+    #   port: 
+
+  autoscaling:
+    enabled: false
+
+  volumes: []
+  volumeMounts: []
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}

@@ -633,3 +633,27 @@ status:
   readyReplicas: 1
   replicas: 1
   updatedReplicas: 1
+
+  ############ Part 4. Helm Chart ############ 
+
+1. Create Helm chart
+
+app $helm create bulletin-chart
+Creating bulletin-chart
+
+2. Template Deployment, Service, Ingress
+
+3. Parametrize image, port, replicas and ingress path
+
+4. Install and upgrade Helm release local after change values
+
+app $helm install bulletin-release ./bulletin-chart
+NAME: bulletin-release
+LAST DEPLOYED: Mon Mar 31 16:16:18 2025
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+1. Get the application URL by running these commands:
+  http://bulletin-chart.local/
