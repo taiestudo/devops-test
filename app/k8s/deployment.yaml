@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bulletin-deployment
+  labels:
+    app: bulletin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bulletin
+  template:
+    metadata:
+      labels:
+        app: bulletin
+    spec:
+      containers:
+        - name: bulletin-app
+          image: bulletin-app:v1.0 
+          imagePullPolicy: IfNotPresent # Para imagem local
+          ports:
+            - containerPort: 8081
+          env:
+            - name: PORT
+              value: "8081"

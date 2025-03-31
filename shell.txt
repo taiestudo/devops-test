@@ -457,3 +457,179 @@ devops-test $docker logs bulletin-container
 Using sqlite database at /etc/todos/todo.db
 App listening on port 8081
 
+############ Part 3: Kubernetes Deployment ############ 
+
+1. Create Deployment, Service and Ingress manifests
+
+2. Use environment variable for port in Deployment
+
+3. Deploy with kubectl
+
+##INSTALL NGINX INGRESS
+
+devops-test $helm upgrade --install ingress-nginx ingress-nginx \
+  --repo https://kubernetes.github.io/ingress-nginx \
+  --namespace ingress-nginx --create-namespace
+Release "ingress-nginx" does not exist. Installing it now.
+NAME: ingress-nginx
+LAST DEPLOYED: Mon Mar 31 16:06:52 2025
+NAMESPACE: ingress-nginx
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+The ingress-nginx controller has been installed.
+It may take a few minutes for the load balancer IP to be available.
+You can watch the status by running 'kubectl get service --namespace ingress-nginx ingress-nginx-controller --output wide --watch'
+
+An example Ingress that makes use of the controller:
+  apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    name: example
+    namespace: foo
+  spec:
+    ingressClassName: nginx
+    rules:
+      - host: www.example.com
+        http:
+          paths:
+            - pathType: Prefix
+              backend:
+                service:
+                  name: exampleService
+                  port:
+                    number: 80
+              path: /
+    # This section is only required if TLS is to be enabled for the Ingress
+    tls:
+      - hosts:
+        - www.example.com
+        secretName: example-tls
+
+If TLS is enabled for the Ingress, a Secret containing the certificate and key must also be provided:
+
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: example-tls
+    namespace: foo
+  data:
+    tls.crt: <base64 encoded cert>
+    tls.key: <base64 encoded key>
+  type: kubernetes.io/tls
+
+  devops-test $cd app/k8s/
+k8s $kubectl apply -f deployment.yaml
+deployment.apps/bulletin-deployment created
+k8s $kubectl apply -f services.yaml
+service/bulletin-service created
+k8s $kubectl apply -f ingress.yaml 
+ingress.networking.k8s.io/bulletin-ingress created
+
+4. Test app access via Ingress
+
+http://localhost/
+
+5. Access the container shell and show container disk free space
+
+k8s $kubectl get pods
+NAME                                   READY   STATUS    RESTARTS   AGE
+bulletin-deployment-659bfc9455-n7hgt   1/1     Running   0          46s
+k8s $kubectl exec -it bulletin-deployment-659bfc9455-n7hgt -- sh
+/app # df -h
+Filesystem                Size      Used Available Use% Mounted on
+overlay                1006.9G      5.0G    950.6G   1% /
+tmpfs                    64.0M         0     64.0M   0% /dev
+shm                      64.0M         0     64.0M   0% /dev/shm
+/dev/vda1              1006.9G      5.0G    950.6G   1% /dev/termination-log
+/dev/vda1              1006.9G      5.0G    950.6G   1% /etc/resolv.conf
+/dev/vda1              1006.9G      5.0G    950.6G   1% /etc/hostname
+/dev/vda1              1006.9G      5.0G    950.6G   1% /etc/hosts
+tmpfs                     3.4G     12.0K      3.4G   0% /run/secrets/kubernetes.io/serviceaccount
+tmpfs                     1.7G         0      1.7G   0% /proc/acpi
+tmpfs                    64.0M         0     64.0M   0% /proc/kcore
+tmpfs                    64.0M         0     64.0M   0% /proc/keys
+tmpfs                    64.0M         0     64.0M   0% /proc/timer_list
+tmpfs                     1.7G         0      1.7G   0% /sys/firmware
+/app # exit
+
+6. Show container logs
+
+k8s $kubectl logs bulletin-deployment-659bfc9455-n7hgt
+Using sqlite database at /etc/todos/todo.db
+App listening on port 8081
+
+7. Show deployed deployment yaml
+
+k8s $kubectl get deployment bulletin-deployment -o yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"app":"bulletin"},"name":"bulletin-deployment","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"bulletin"}},"template":{"metadata":{"labels":{"app":"bulletin"}},"spec":{"containers":[{"env":[{"name":"PORT","value":"8081"}],"image":"bulletin-app:v1.0","imagePullPolicy":"IfNotPresent","name":"bulletin-app","ports":[{"containerPort":8081}]}]}}}}
+  creationTimestamp: "2025-03-31T19:10:53Z"
+  generation: 1
+  labels:
+    app: bulletin
+  name: bulletin-deployment
+  namespace: default
+  resourceVersion: "79095"
+  uid: f975434d-21af-4eb4-af69-74c7ccd3e978
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: bulletin
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: bulletin
+    spec:
+      containers:
+      - env:
+        - name: PORT
+          value: "8081"
+        image: bulletin-app:v1.0
+        imagePullPolicy: IfNotPresent
+        name: bulletin-app
+        ports:
+        - containerPort: 8081
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2025-03-31T19:10:55Z"
+    lastUpdateTime: "2025-03-31T19:10:55Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2025-03-31T19:10:53Z"
+    lastUpdateTime: "2025-03-31T19:10:55Z"
+    message: ReplicaSet "bulletin-deployment-659bfc9455" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
