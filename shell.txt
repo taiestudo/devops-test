@@ -1,0 +1,102 @@
+############ Part 1: Git CLI ############ 
+
+1.Clone Node.js Bulletin Board APP repository
+
+devops-test $git clone https://github.com/taiestudo/getting-started.git
+Cloning into 'getting-started'...
+remote: Enumerating objects: 923, done.
+remote: Counting objects: 100% (7/7), done.
+remote: Compressing objects: 100% (7/7), done.
+remote: Total 923 (delta 0), reused 0 (delta 0), pack-reused 916 (from 1)
+Receiving objects: 100% (923/923), 4.60 MiB | 3.97 MiB/s, done.
+Resolving deltas: 100% (484/484), done.
+
+2. Create a feature branch called develop
+
+devops-test $git checkout -b develop
+Switched to a new branch 'develop'
+
+3. Modify the app to support configurable port via environment variable
+
+4. Commit and push changes
+
+devops-test $git add app/src/
+devops-test $git commit -m "Add configurable port via environment variable
+-Modified /app/src/index.js"
+[develop ce04bb4] Add configurable port via environment variable -Modified /app/src/index.js
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+devops-test $git push origin develop
+Enumerating objects: 9, done.
+Counting objects: 100% (9/9), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (5/5), done.
+Writing objects: 100% (5/5), 720 bytes | 720.00 KiB/s, done.
+Total 5 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+remote: 
+remote: Create a pull request for 'develop' on GitHub by visiting:
+remote:      https://github.com/taiestudo/devops-test/pull/new/develop
+remote: 
+To https://github.com/taiestudo/devops-test.git
+ * [new branch]      develop -> develop
+
+ 5. Simulate a merge conflict and resolve it
+
+ devops-test $git switch main
+Switched to branch 'main'
+Your branch is up to date with 'origin/main'.
+devops-test $git add app/src/
+devops-test $git commit -m "Simulating a merge conflict"
+On branch main
+Your branch is up to date with 'origin/main'.
+
+nothing to commit, working tree clean
+devops-test $git add app/src/
+devops-test $git commit -m "Simulating a merge conflict"
+[main 0ce2761] Simulating a merge conflict
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+devops-test $git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+devops-test $git switch develop
+Switched to branch 'develop'
+devops-test $git merge main
+Auto-merging app/src/index.js
+CONFLICT (content): Merge conflict in app/src/index.js
+Automatic merge failed; fix conflicts and then commit the result.
+devops-test $git add app/src/index.js 
+devops-test $git commit
+[develop 9c1743b] Merge branch 'main' into develop
+
+6. Use stash, switch branches, and re-apply changes
+
+devops-test $git status
+On branch develop
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   app/src/index.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+devops-test $git add app/src/index.js 
+devops-test $git stash
+Saved working directory and index state WIP on develop: 9c1743b Merge branch 'main' into develop
+devops-test $git switch main
+Switched to branch 'main'
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+devops-test $git switch develop
+Switched to branch 'develop'
+devops-test $git stash pop
+On branch develop
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   app/src/index.js
+
+no changes added to commit (use "git add" and/or "git commit -a")
+Dropped refs/stash@{0} (37080841127593da5a7c4737cacea50acaf5cda0)
+devops-test $git restore app/src/index.js
