@@ -2039,3 +2039,9 @@ aws_vpc.bulletin-vpc: Destroying... [id=vpc-02b5f08d47a1727dc]
 aws_vpc.bulletin-vpc: Destruction complete after 1s
 
 Destroy complete! Resources: 9 destroyed.
+
+############ Part 7: CI/CD Pipeline Design ############ 
+
+1. Build Docker image on push
+2. Push to container registry
+
