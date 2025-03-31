@@ -1,0 +1,14 @@
+What is IAM Role?
+An IAM role grants permissions to AWS services using temporary credentials
+
+Security Group vs NACL?
+Security groups operate at the instance level, are stateful and use allow rules. NACLs operate at the subnet level, are stateless and use allow and deny rules
+
+S3 lifecycle rule use cases?
+Are policies to manage object transitions and deletions for cost optimization, archiving, and retention
+
+What services manages DNS in AWS?
+Amazon Route 53
+
+What is the difference between SSM and SSH?
+SSM manages instances without open ports, using IAM roles. SSH uses open ports and key pairs or passwords
