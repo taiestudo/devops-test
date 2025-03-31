@@ -14,8 +14,11 @@ app.post('/items', addItem);
 app.put('/items/:id', updateItem);
 app.delete('/items/:id', deleteItem);
 
+const port = process.env.PORT || 3000;  
 db.init().then(() => {
-    app.listen(3000, () => console.log('Listening on port 3000'));
+    app.listen(port, () => {
+        console.log(`App listening on port ${port}`);
+      });
 }).catch((err) => {
     console.error(err);
     process.exit(1);
@@ -29,4 +32,4 @@ const gracefulShutdown = () => {
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
-process.on('SIGUSR2', gracefulShutdown); // Sent by nodemon
+process.on('SIGUSR2', gracefulShutdown); // Sent by nodemong
