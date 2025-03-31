@@ -657,3 +657,350 @@ TEST SUITE: None
 NOTES:
 1. Get the application URL by running these commands:
   http://bulletin-chart.local/
+
+############ Part 5: AWS Service ############ 
+
+1. Create S3 bucket and enable versioning
+
+devops-test $aws s3 mb s3://bulletin-board-app-tai --region us-east-1
+make_bucket: bulletin-board-app-tai
+devops-test $aws s3api put-bucket-versioning --bucket bulletin-board-app-tai --versioning-configuration Status=Enabled --region us-east-1
+
+2. Upload file to bucket
+
+devops-test $aws s3 cp bucket-file.txt s3://bulletin-board-app-tai/bucket-file.txt --region us-east-1
+upload: ./bucket-file.txt to s3://bulletin-board-app-tai/bucket-file.txt
+
+3.Launch EC2 instance in specific VPC and attach Security Group
+
+devops-test $aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --query "Vpcs[0].VpcId" --output text --region us-east-1
+vpc-0159261f980ab4029
+
+devops-test $aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-0159261f980ab4029" --query "Subnets[0].SubnetId" --output text --region us-east-1
+subnet-03f93be6a2a58c3a0
+
+devops-test $aws ec2 describe-subnets --filters "Name=vpc-id,Values=vpc-0159261f980ab4029" --query "Subnets[0].SubnetId" --output text --region us-east-1
+subnet-03f93be6a2a58c3a0
+devops-test $aws ec2 create-security-group --group-name "bulletin-sg" \
+    --description "Allow SSH" \
+    --vpc-id vpc-0159261f980ab4029 \
+    --query 'GroupId' --output text \
+    --region us-east-1
+sg-0afaeee2ae26abb7c
+
+devops-test $aws ec2 authorize-security-group-ingress --group-id sg-0afaeee2ae26abb7c    --protocol tcp --port 22 --cidr 193.186.4.200/32     --region us-east-1
+{
+    "Return": true,
+    "SecurityGroupRules": [
+        {
+            "SecurityGroupRuleId": "sgr-0fd5c90e3335875b8",
+            "GroupId": "sg-0afaeee2ae26abb7c",
+            "GroupOwnerId": "054183072842",
+            "IsEgress": false,
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIpv4": "193.186.4.200/32",
+            "SecurityGroupRuleArn": "arn:aws:ec2:us-east-1:054183072842:security-group-rule/sgr-0fd5c90e3335875b8"
+        }
+    ]
+}
+
+##Search free tier ami from AWS EC2 Dashboard##
+
+devops-teste $aws ec2 create-key-pair \
+    --key-name "bulletin-key-pair" \
+    --query 'KeyMaterial' \
+    --output text > bulletin-key-pair.pem
+devops-teste $chmod 400 bulletin-key-pair.pem
+devops-teste $mv bulletin-key-pair.pem ~/.ssh
+
+devops-test $aws ec2 run-instances \
+    --image-id ami-071226ecf16aa7d96 \
+    --instance-type t2.micro \
+    --key-name "bulletin-key-pair" \
+    --security-group-ids sg-0afaeee2ae26abb7c \
+    --subnet-id subnet-03f93be6a2a58c3a0 \
+    --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=Bulletin-EC2}]' \
+    --region us-east-1 \
+    --query 'Instances[0].InstanceId' --output text
+i-0f82c1b8af922e592
+
+4. List EC2 instances, S3 buckets and IAM UsernsMode
+
+INSTANCE
+
+devops-test $aws ec2 describe-instances --instance-ids i-0f82c1b8af922e592
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+                        {
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/xvda",
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/xvda",
+                            "Ebs": {
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/xvda",
+                            "Ebs": {
+                                "AttachTime": "2025-03-31T19:38:35+00:00",
+:...skipping...
+{
+    "Reservations": [
+        {
+            "ReservationId": "r-0cf94a2007363468a",
+            "OwnerId": "054183072842",
+            "Groups": [],
+            "Instances": [
+                {
+                    "Architecture": "x86_64",
+                    "BlockDeviceMappings": [
+                        {
+                            "DeviceName": "/dev/xvda",
+                            "Ebs": {
+                                "AttachTime": "2025-03-31T19:38:35+00:00",
+                                "DeleteOnTermination": true,
+                                "Status": "attached",
+                                "VolumeId": "vol-0ec792b4ea2fe4160"
+                            }
+                        }
+                    ],
+                    "ClientToken": "263865dc-92c4-4a6f-8245-c6d9e0457fda",
+                    "EbsOptimized": false,
+                    "EnaSupport": true,
+                    "Hypervisor": "xen",
+                    "NetworkInterfaces": [
+                        {
+                            "Association": {
+                                "IpOwnerId": "amazon",
+                                "PublicDnsName": "ec2-100-28-227-22.compute-1.amazonaws.com",
+                                "PublicIp": "100.28.227.22"
+                            },
+                            "Attachment": {
+                                "AttachTime": "2025-03-31T19:38:35+00:00",
+                                "AttachmentId": "eni-attach-03d8dc10e8fa593f9",
+                                "DeleteOnTermination": true,
+                                "DeviceIndex": 0,
+                                "Status": "attached",
+                                "NetworkCardIndex": 0
+                            },
+                            "Description": "",
+                            "Groups": [
+                                {
+                                    "GroupId": "sg-0afaeee2ae26abb7c",
+                                    "GroupName": "bulletin-sg"
+                                }
+                            ],
+                            "Ipv6Addresses": [],
+                            "MacAddress": "16:ff:f4:05:3e:f9",
+                            "NetworkInterfaceId": "eni-0143a2dabaa9296b0",
+                            "OwnerId": "054183072842",
+                            "PrivateDnsName": "ip-172-31-76-146.ec2.internal",
+                            "PrivateIpAddress": "172.31.76.146",
+                            "PrivateIpAddresses": [
+                                {
+                                    "Association": {
+                                        "IpOwnerId": "amazon",
+                                        "PublicDnsName": "ec2-100-28-227-22.compute-1.amazonaws.com",
+                                        "PublicIp": "100.28.227.22"
+                                    },
+                                    "Primary": true,
+                                    "PrivateDnsName": "ip-172-31-76-146.ec2.internal",
+                                    "PrivateIpAddress": "172.31.76.146"
+                                }
+                            ],
+                            "SourceDestCheck": true,
+                            "Status": "in-use",
+                            "SubnetId": "subnet-03f93be6a2a58c3a0",
+                            "VpcId": "vpc-0159261f980ab4029",
+                            "InterfaceType": "interface",
+                            "Operator": {
+                                "Managed": false
+                            }
+                        }
+                    ],
+                    "RootDeviceName": "/dev/xvda",
+                    "RootDeviceType": "ebs",
+                    "SecurityGroups": [
+                        {
+                            "GroupId": "sg-0afaeee2ae26abb7c",
+                            "GroupName": "bulletin-sg"
+                        }
+                    ],
+                    "SourceDestCheck": true,
+                    "Tags": [
+                        {
+                            "Key": "Name",
+                            "Value": "Bulletin-EC2"
+                        }
+                    ],
+                    "VirtualizationType": "hvm",
+                    "CpuOptions": {
+                        "CoreCount": 1,
+                        "ThreadsPerCore": 1
+                    },
+                    "CapacityReservationSpecification": {
+                        "CapacityReservationPreference": "open"
+                    },
+                    "HibernationOptions": {
+                        "Configured": false
+                    },
+                    "MetadataOptions": {
+                        "State": "applied",
+                        "HttpTokens": "required",
+                        "HttpPutResponseHopLimit": 2,
+                        "HttpEndpoint": "enabled",
+                        "HttpProtocolIpv6": "disabled",
+                        "InstanceMetadataTags": "disabled"
+                    },
+                    "EnclaveOptions": {
+                        "Enabled": false
+                    },
+                    "BootMode": "uefi-preferred",
+                    "PlatformDetails": "Linux/UNIX",
+                    "UsageOperation": "RunInstances",
+                    "UsageOperationUpdateTime": "2025-03-31T19:38:35+00:00",
+                    "PrivateDnsNameOptions": {
+                        "HostnameType": "ip-name",
+                        "EnableResourceNameDnsARecord": false,
+                        "EnableResourceNameDnsAAAARecord": false
+                    },
+                    "MaintenanceOptions": {
+                        "AutoRecovery": "default"
+                    },
+                    "CurrentInstanceBootMode": "legacy-bios",
+                    "NetworkPerformanceOptions": {
+                        "BandwidthWeighting": "default"
+                    },
+                    "Operator": {
+                        "Managed": false
+                    },
+                    "InstanceId": "i-0f82c1b8af922e592",
+                    "ImageId": "ami-071226ecf16aa7d96",
+                    "State": {
+                        "Code": 16,
+                        "Name": "running"
+                    },
+                    "PrivateDnsName": "ip-172-31-76-146.ec2.internal",
+                    "PublicDnsName": "ec2-100-28-227-22.compute-1.amazonaws.com",
+                    "StateTransitionReason": "",
+                    "KeyName": "bulletin-key-pair",
+                    "AmiLaunchIndex": 0,
+                    "ProductCodes": [],
+                    "InstanceType": "t2.micro",
+                    "LaunchTime": "2025-03-31T19:38:35+00:00",
+                    "Placement": {
+                        "GroupName": "",
+                        "Tenancy": "default",
+                        "AvailabilityZone": "us-east-1f"
+                    },
+                    "Monitoring": {
+                        "State": "disabled"
+                    },
+                    "SubnetId": "subnet-03f93be6a2a58c3a0",
+                    "VpcId": "vpc-0159261f980ab4029",
+                    "PrivateIpAddress": "172.31.76.146",
+                    "PublicIpAddress": "100.28.227.22"
+                }
+            ]
+        }
+    ]
+}
+
+S3
+
+devops-test $aws s3 ls s3://bulletin-board-app-tai/
+2025-03-31 16:30:08         12 bucket-file.txt
+
+IAM
+
+devops-test $aws iam list-users
+{
+    "Users": [
+        {
+            "Path": "/",
+            "UserName": "admin",
+            "UserId": "AIDAQZHMQCRFPKP64LMNZ",
+            "Arn": "arn:aws:iam::054183072842:user/admin",
+            "CreateDate": "2025-03-24T19:28:13+00:00",
+            "PasswordLastUsed": "2025-03-31T19:24:36+00:00"
+        },
+        {
+            "Path": "/",
+            "UserName": "taiadmin",
+            "UserId": "AIDAQZHMQCRFEU54LPTIK",
+            "Arn": "arn:aws:iam::054183072842:user/taiadmin",
+            "CreateDate": "2025-03-24T19:26:42+00:00"
+        }
+    ]
+}
