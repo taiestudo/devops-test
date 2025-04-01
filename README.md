@@ -9,23 +9,31 @@ helm upgrade --install ingress-nginx ingress-nginx \
   
 ## Instructions to change environment port
 
-On docker, change <PORT>:
-docker run -dp 8080:<PORT> --name bulletin-container -e PORT=<PORT> bulletin-app:v1.0
+Docker:
+Edit ENVPORT on run command
+docker run -dp 8080:ENVPORT --name bulletin-container -e PORT=ENVPORT bulletin-app:v1.0
 
-On Kubernetes, modify on app/k8s/ the following files deployment.yaml and services.yaml:
+Kubernetes:
+Edit ENVPORT on app/k8s/deployment.yaml and app/k8s/services.yaml:
 
 k8s-deployment.yaml
       env:
       - name: PORT
-        value: "<PORT>"
+        value: "ENVPORT"
       ports:
-      - containerPort: <PORT>
+      - containerPort: ENVPORT
 
 k8s-service.yaml
     ports:
       - protocol: TCP
         port: 80
-        targetPort: <PORT>
+        targetPort: ENVPORT
+
+Helm:
+Edit app/bulletin-chart/values.yaml
+
+values.yaml
+  targetPort: ENVPORT
 
 ## Link to GitHub Repository and Dockerhub artifact
 
